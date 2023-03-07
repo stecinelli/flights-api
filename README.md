@@ -1,2 +1,3 @@
-# flights-api
+# Flights API
+
 Backend only
