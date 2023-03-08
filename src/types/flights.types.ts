@@ -3,6 +3,7 @@ export default interface IFlight {
   departureAt: string,
   arrivalAt: string,
   availableSeats: number,
+  waitTime?: string,
   prices: {
     currency: string,
     adult: number,
