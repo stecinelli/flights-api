@@ -1,57 +1,37 @@
-import IFlightsRoute from '../../types/flights.types'
-import IFlight from '../../types/flights.types';
-import ILayovers from '../../types/flights.types';
+import { IFlightsRoute, IFlight } from '../../types/flights.types'
+import LayoverService from '../services/layover.services'
 
-const flightsData: IFlightsRoute[] = require('../../database/flights.data.json');
-
-const layovers: Array<object> = [
-  { route_id: "8efc39dd", departureDestination: "Oslo", arrivalDestination: "Stockholm" },
-  { route_id: "42be9e9e", departureDestination: "Amsterdam", arrivalDestination: "Stockholm" },
-  { route_id: "a35d65d2", departureDestination: "Stockholm", arrivalDestination: "Oslo" },
-  { route_id: "52ec1574", departureDestination: "Stockholm", arrivalDestination: "Amsterdam" },
-  { route_id: "c76824c1", departureDestination: "Amsterdam", arrivalDestination: "Oslo" },
-]
+export const flightsData: IFlightsRoute[] = require('../../database/flights.data.json');
 
 export default class FlightsController {
-  list(departureDestination: string, arrivalDestination: string, date?: string, maxPrice?: number): IFlight[] {
+  list(departureDestination: string, arrivalDestination: string, date?: string, maxPrice?: number): IFlightsRoute {
 
-    let machingFlights: IFlight[] = flightsData
+    let machingRoutes: IFlightsRoute[] = flightsData
       .filter((r: IFlightsRoute) => r.departureDestination === departureDestination
         && r.arrivalDestination === arrivalDestination);
 
-    if (machingFlights.length > 0) { machingFlights = machingFlights[0].itineraries }
+    let machingFlights: IFlightsRoute | undefined = undefined
 
-    if (machingFlights.length <= 0) {
-      // lista voos que saem do origem desejada
-      const correctDeparture: IFlightsRoute[] = flightsData
-        .filter((r: IFlightsRoute) => r.departureDestination === departureDestination)
+    if (machingRoutes.length > 0) {
+      machingFlights = machingRoutes[0]
+    }
 
-      // lista voos que chegam no destino desejado
-      const correctArrival: IFlightsRoute[] = flightsData
-        .filter((r: IFlightsRoute) => r.arrivalDestination === arrivalDestination)
+    if (machingRoutes.length <= 0) {
+      const layoverRoute = LayoverService.create(departureDestination, arrivalDestination);
+      return layoverRoute;
 
-      // verifica se algum dos destinos da origem inicial tem saida para o destino final (traz a segunda rota)
-      let correctLayoverRoute2: IFlightsRoute | undefined = undefined;
-
-      correctDeparture.forEach((r: IFlightsRoute) => {
-        correctLayoverRoute2 = correctArrival
-          .find((newR: IFlightsRoute) => newR.departureDestination === r.arrivalDestination)
-        console.log('correctLayoverV2', correctLayoverRoute2)
-      })
-
-      // encontra a primeira rota
-      const correctLayoverRoute1: IFlightsRoute[] = correctDeparture
-        .filter((r: IFlightsRoute) => r.arrivalDestination === correctLayoverRoute2?.departureDestination)
-
-      // calcular tempo de espera entre chegada na escala e saida pro destino final
-      // cria obj saida do voo 1, chegada do voo 2 e waitTime
-
-      return machingFlights // WIP
     } else if (date) {
-      return machingFlights.filter((f: IFlight) => f.departureAt.slice(1, 10) === date.slice(1, 10))
-    } else
-      return machingFlights
+      const filteredRoute: IFlight[] = machingFlights!.itineraries.filter((f: IFlight) => f.departureAt.slice(1, 10) === date.slice(1, 10))
+      const machingFlightsFiltered: IFlightsRoute = {
+        route_id: machingFlights!.route_id,
+        departureDestination: machingFlights!.departureDestination,
+        arrivalDestination: machingFlights!.arrivalDestination,
+        itineraries: filteredRoute
+      }
+      return machingFlightsFiltered
 
+    } else
+      return machingFlights!
 
   }
 }

@@ -6,14 +6,14 @@ import FlightRequestSchema from "./flights.schema";
 const router = express.Router();
 
 
-// GET flights (dep/arr, time, cost)
 router.get("/", validate(FlightRequestSchema.get), (req: Request, res: Response) => {
   const departureDestination: string = req.body.departureDestination;
   const arrivalDestination: string = req.body.arrivalDestination;
+  const date: string = req.body.date;
 
   const controller = new FlightsController;
-  
-  res.json((controller.list(departureDestination, arrivalDestination)));
+
+  res.json((controller.list(departureDestination, arrivalDestination, date)));
 });
 
 // TEST (for connection check)

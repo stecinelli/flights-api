@@ -6,14 +6,12 @@ import IBooking from "../../types/booking.types"
 
 const router = express.Router();
 
-// POST (make the booking)
 router.post("/", validate(BookingRequestSchema.post), (req: Request, res: Response) => {
   const newBooking: IBooking = req.body;
   const controller = new BookingController;
   res.status((controller.add(newBooking))).json()
 });
 
-// GET (see all the bookings or for specific flight)
 router.get("/", validate(BookingRequestSchema.get), (req: Request, res: Response) => {
   const email: string = req.body.email;
   const flight_id: string = req.body.flight_id;
@@ -27,11 +25,10 @@ router.get("/", validate(BookingRequestSchema.get), (req: Request, res: Response
     : bookingList = controller.list(email);
 
   !bookingList || bookingList.length <= 0
-    ? res.status(400).json()
+    ? res.status(400).json('No reservations found')
     : res.json(bookingList)
 });
 
-// PUT (change qnt or userName on one bokking) -- verificar disponibilidade do voo
 router.put("/", validate(BookingRequestSchema.put), (req: Request, res: Response) => {
   const email: string = req.body.email;
   const flight_id: string = req.body.flight_id;
@@ -40,12 +37,11 @@ router.put("/", validate(BookingRequestSchema.put), (req: Request, res: Response
 
   const controller = new BookingController;
 
-  email && flight_id 
-  ? res.status((controller.edit(email, flight_id, userName, bookedSeats))).json()
-  : res.status(400).json()
+  userName || bookedSeats
+    ? res.status((controller.edit(email, flight_id, userName, bookedSeats))).json()
+    : res.status(400).json('Please, send User Name or Booked Seats informations to be changed')
 
 });
-// DELETE (delete one booking)
 router.delete("/", validate(BookingRequestSchema.delete), (req: Request, res: Response) => {
   const email: string = req.body.email;
   const flight_id: string = req.body.flight_id;
