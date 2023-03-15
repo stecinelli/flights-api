@@ -10,17 +10,17 @@ export default class FlightsController {
       .filter((r: IFlightsRoute) => r.departureDestination === departureDestination
         && r.arrivalDestination === arrivalDestination);
 
-    let machingFlights: IFlightsRoute | undefined = undefined
+    let machingFlights: IFlightsRoute | undefined = undefined;
 
     if (machingRoutes.length > 0) {
-      machingFlights = machingRoutes[0]
-    }
+      machingFlights = machingRoutes[0];
 
-    if (machingRoutes.length <= 0) {
+    } else {
       const layoverRoute = LayoverService.create(departureDestination, arrivalDestination);
-      return layoverRoute;
-
-    } else if (date) {
+      machingFlights = layoverRoute;
+    }
+    
+    if (date) {
       const filteredRoute: IFlight[] = machingFlights!.itineraries.filter((f: IFlight) => f.departureAt.slice(1, 10) === date.slice(1, 10))
       const machingFlightsFiltered: IFlightsRoute = {
         route_id: machingFlights!.route_id,
@@ -28,10 +28,9 @@ export default class FlightsController {
         arrivalDestination: machingFlights!.arrivalDestination,
         itineraries: filteredRoute
       }
-      return machingFlightsFiltered
+      return machingFlightsFiltered;
 
-    } else
-      return machingFlights!
+    } else return machingFlights!
 
   }
 }
