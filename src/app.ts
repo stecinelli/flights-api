@@ -27,7 +27,7 @@ app.use((err: unknown, _: Request, res: Response, next: NextFunction) => {
   if (err instanceof expressValidation.ValidationError) {
     res.status(err.statusCode).json(err);
   } else {
-    console.log(err);
+    console.error(err);
     res.status(500).send();
   }
 });

@@ -28,3 +28,11 @@ export interface IFlightsRoute  {
   arrivalDestination: string,
   itineraries: IFlight[]
 }
+
+export interface IFlightInfo  {
+  flight_id: string,
+  departureDestination: string,
+  arrivalDestination: string,
+  departureAt: string,
+  arrivalAt: string,
+}

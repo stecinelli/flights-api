@@ -4,5 +4,17 @@
     "bookedSeats": 4,
     "userName": "admin",
     "email": "admin@gmail.com"
+  },
+  {
+    "flight_id": "87211f8b",
+    "bookedSeats": 1,
+    "userName": "admin2",
+    "email": "admin@gmail.com"
+  },
+  {
+    "flight_id": "25251a99",
+    "bookedSeats": 2,
+    "userName": "admin3",
+    "email": "admin@gmail.com"
   }
 ]

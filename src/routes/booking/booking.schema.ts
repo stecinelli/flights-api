@@ -3,7 +3,7 @@ import Joi from "joi";
 export default {
   get: {
     body: Joi.object({
-      email: Joi.string().email().required(),
+      email: Joi.string().email(),
       flight_id: Joi.string(),
     }),
   },

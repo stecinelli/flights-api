@@ -13,8 +13,8 @@ router.post("/", validate(BookingRequestSchema.post), (req: Request, res: Respon
 });
 
 router.get("/", validate(BookingRequestSchema.get), (req: Request, res: Response) => {
-  const email: string = req.body.email;
-  const flight_id: string = req.body.flight_id;
+  const email: string = req.query.email || req.body.email;
+  const flight_id: string = req.query.flight_id || req.body.flight_id;
 
   const controller = new BookingController;
 
